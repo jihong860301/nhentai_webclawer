@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup as bs
 import sys
 
 ##########################################
-six_num = sys.argv[:]
+six_num = '367418'
 ##########################################
 nref = 'https://nhentai.net/g/'+six_num+'/'
 
@@ -30,4 +30,4 @@ for i in range(ii):
     pic_out = open('_'+str(i+1)+'.png', 'wb')
     pic_out.write(img)
     pic_out.close()
-    print('Page '+str(i)+' done!')
+    print('Page '+str(i+1)+' done!')
