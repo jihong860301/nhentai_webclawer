@@ -1,9 +1,10 @@
 from genericpath import samefile
 import requests as rq
 from bs4 import BeautifulSoup as bs
+import sys
 
 ##########################################
-six_num = '141968'
+six_num = sys.argv[:]
 ##########################################
 nref = 'https://nhentai.net/g/'+six_num+'/'
 
