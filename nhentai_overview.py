@@ -1,10 +1,13 @@
 import requests
 from bs4 import BeautifulSoup
+import sys
+import os
 
 #########################################################
-filename = 'loli_search'
-nhentai_ref = "https://nhentai.net/search/?q=loli"
+filename = '22slash7_search'
+nhentai_ref = "https://nhentai.net/parody/22-slash-7/"
 #########################################################
+
 r = requests.get(nhentai_ref)
 soup = BeautifulSoup(r.text, "html.parser")
 sel = soup.select("div.gallery a")
@@ -12,7 +15,6 @@ sel = soup.select("div.gallery a")
 list_text = open('nhentai_'+filename+'.txt', 'w', encoding='UTF-8')
 for s in sel:
     nref = 'https://nhentai.net'+s["href"]
-
     r2 = requests.get(nref)
     soup2 = BeautifulSoup(r2.text, 'html.parser')
     sel2_title = soup2.select("div h2")
