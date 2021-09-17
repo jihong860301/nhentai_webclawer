@@ -7,6 +7,7 @@ import img2pdf
 ##########################################
 six_num = sys.argv[:]
 ##########################################
+
 for sn in six_num[1:]:
     if not os.path.isdir('./'+sn):
         os.mkdir(sn)
@@ -17,13 +18,10 @@ for sn in six_num[1:]:
     sel = soup.select('div h2')
     print(sel[0].text)
 
-    rr = rq.get(nref+'1/')
-    soup = bs(rr.text, 'html.parser')
-    sel = soup.select('div section button span')
+    sel_tag = soup.select('div section span a')
+    print('total pages', sel_tag[-1].text)
 
-    print('total pages', sel[-1].text)
-
-    ii = int(sel[-1].text)
+    ii = int(sel_tag[-1].text)
     img_list = []
     for i in range(ii):
         rr = rq.get(nref+str(i+1)+'/')
