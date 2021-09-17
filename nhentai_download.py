@@ -9,9 +9,9 @@ six_num = sys.argv[:]
 ##########################################
 
 for sn in six_num[1:]:
-    if not os.path.isdir('./'+sn):
+    if not os.path.isdir(f'./{sn}'):
         os.mkdir(sn)
-    nref = 'https://nhentai.net/g/'+sn+'/'
+    nref = f'https://nhentai.net/g/{sn}/'
 
     rr = rq.get(nref)
     soup = bs(rr.text, 'html.parser')
@@ -30,9 +30,9 @@ for sn in six_num[1:]:
         img_src = sel[0]["src"]
         img_get = rq.get(img_src)
         img = img_get.content
-        with open('./'+sn+'/_'+str(i+1)+'.png', 'wb') as pic_out:
+        with open(f'./{sn}/_{i+1}.png', 'wb') as pic_out:
             pic_out.write(img)
-        img_list.append('./'+sn+'/_'+str(i+1)+'.png')
-        print('Page '+str(i+1)+' done!')
-    with open('./'+sn+'/'+sn+'.pdf', 'wb') as f:
+        img_list.append(f'./{sn}/_{i+1}.png')
+        print(f'Page {i+1} done!')
+    with open(f'./{sn}/{sn}.pdf', 'wb') as f:
         f.write(img2pdf.convert(img_list))

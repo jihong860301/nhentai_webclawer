@@ -10,10 +10,10 @@ class overview:
         self.order = order
 
     def search(self):
-        if not os.path.isdir('./'+self.key_word+'_search'):
+        if not os.path.isdir(f'./{self.key_word}_search'):
             os.mkdir(self.key_word+'_search')
-        list_text = open('./'+self.key_word+'_search/'+self.key_word+'_search' +
-                         '.txt', 'w', encoding='UTF-8')
+        list_text = open(
+            f'./{self.key_word}_search/{self.key_word}_search.txt', 'w', encoding='UTF-8')
         key_split = self.key_word.split()
         if not len(key_split) == 1:
             search_keyword = ''
