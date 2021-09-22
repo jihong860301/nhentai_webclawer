@@ -1,5 +1,5 @@
 *.png
-test.py
+test*.py
 *.pyc
 __pycache__/
 *.pdf
