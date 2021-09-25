@@ -17,7 +17,9 @@ def get_image(img_src):
         pic_out.write(img)
 
 
+base_dir = os.getcwd()
 for sn in six_num[1:]:
+    os.chdir(base_dir)
     # create folder for images
     if not os.path.isdir(f'./{sn}'):
         os.mkdir(sn)
@@ -42,10 +44,10 @@ for sn in six_num[1:]:
     sel = soup.select("div a img")
     base_src = sel[0]["src"].split('1.jpg')[0]
     img_src = [f'{base_src}{i}.jpg' for i in range(
-        1, int(sel_tag[-1].text))]
+        1, int(sel_tag[-1].text)+1)]
 
     # using multi-thread to download images
-    with ThreadPoolExecutor(max_workers=10) as executor:
+    with ThreadPoolExecutor(max_workers=16) as executor:
         executor.map(get_image, img_src)
 
     # make pdf with A-4 size
@@ -53,4 +55,4 @@ for sn in six_num[1:]:
     layout_fun = img2pdf.get_layout_fun(a4)
     with open(f'./{sn}.pdf', 'wb') as f:
         f.write(img2pdf.convert([f'./_{i}.png' for i in range(
-            1, int(sel_tag[-1].text))], layout_fun=layout_fun))
+            1, int(sel_tag[-1].text)+1)], layout_fun=layout_fun))
