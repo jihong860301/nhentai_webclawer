@@ -53,6 +53,9 @@ for sn in six_num[1:]:
     # make pdf with A-4 size
     a4 = (img2pdf.mm_to_pt(210), img2pdf.mm_to_pt(297))
     layout_fun = img2pdf.get_layout_fun(a4)
-    with open(f'./{sn}.pdf', 'wb') as f:
-        f.write(img2pdf.convert([f'./_{i}.png' for i in range(
-            1, int(sel_tag[-1].text)+1)], layout_fun=layout_fun))
+    try:
+        with open(f'./{sn}.pdf', 'wb') as f:
+            f.write(img2pdf.convert(
+                [f'./_{i}.png' for i in range(1, int(sel_tag[-1].text)+1)], layout_fun=layout_fun))
+    except:
+        print('Fail to make pdf!\nRemake pdf with make_pdf.py')

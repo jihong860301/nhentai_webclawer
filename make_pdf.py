@@ -13,7 +13,12 @@ for fname in os.listdir(dirname):
     path = os.path.join(dirname, fname)
     if os.path.isdir(path):
         continue
-    imgs.append(path)
+    imgs.append(path.split('_')[1].split('.')[0])
+
+imgs_index = [int(x) for x in imgs]
+imgs_index.sort()
+
+imgs = [f'./{dir[0]}/_{str(x)}.png' for x in imgs_index]
 
 # make pdf with A-4 size
 a4 = (img2pdf.mm_to_pt(210), img2pdf.mm_to_pt(297))
