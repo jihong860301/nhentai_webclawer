@@ -1,7 +1,6 @@
 import requests as rq
 from bs4 import BeautifulSoup as bs
 import os
-import img2pdf
 from concurrent.futures import ThreadPoolExecutor
 from PIL import Image
 import io
@@ -25,7 +24,9 @@ class nhentai_download:
             self.total_pages = sel_tag[-1].text
         else:
             self.url = 'https://nhentai.net/'
+            self.author = ''
             self.title = ''
+            self.otherinfo = ''
             self.total_pages = ''
 
     def dlimages(self):
@@ -80,8 +81,13 @@ class nhentai_download:
         soup = bs(rr.text, 'html.parser')
         sel_tag = soup.select('div section span a')
         sel = soup.select('div h2')
-        self.title = sel[0].text
         self.total_pages = sel_tag[-1].text
+        sel = soup.select('div h2.title span.before')
+        self.author = sel[0].text
+        sel = soup.select('div h2.title span.pretty')
+        self.title = sel[0].text
+        sel = soup.select('div h2.title span.after')
+        self.otherinfo = sel[0].text
 
     def set_threads(self, threads):
         self.threads = threads
@@ -96,8 +102,10 @@ class nhentai_download:
         return self.url
 
     def info(self):
-        print('Title: '+self.title)
-        print('Pages: '+self.total_pages+'p')
+        return {'author': self.author,
+                'title': self.title,
+                'other': self.otherinfo,
+                'pages': self.total_pages}
 
     def show_cover(self):
         rr = rq.get(self.url+'1/')
@@ -107,7 +115,7 @@ class nhentai_download:
         img = rq.get(img_src, stream=True).content
 
         image = Image.open(io.BytesIO(img))
-        image.show()
+        return image
 
 
 def get_image(img_src):
@@ -117,3 +125,8 @@ def get_image(img_src):
     if image.mode == 'RGB' or image.mode == 'L':
         if image.width == 1280:
             return image
+
+
+if __name__ == '__main__':
+    ndl = nhentai_download()
+    ndl.set_sixnum('369008')
