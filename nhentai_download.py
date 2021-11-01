@@ -30,6 +30,8 @@ class nhentai_download:
             self.total_pages = ''
 
     def dlimages(self):
+        if not self.dldir:
+            self.dldir = os.getcwd()
         # download dir
         os.chdir(self.dldir)
         # create folder for images
@@ -57,6 +59,8 @@ class nhentai_download:
         os.chdir(self.dldir)
 
     def dlpdf(self):
+        if not self.dldir:
+            self.dldir = os.getcwd()
         rr = rq.get(self.url+'1/')
         soup = bs(rr.text, 'html.parser')
         sel = soup.select("div a img")
@@ -90,7 +94,15 @@ class nhentai_download:
         self.otherinfo = sel[0].text
 
     def set_threads(self, threads):
-        self.threads = threads
+        if isinstance(threads, int):
+            self.threads = threads
+        elif isinstance(threads, str):
+            try:
+                self.threads = int(threads)
+            except:
+                pass
+        else:
+            pass
 
     def set_dldir(self, dldir):
         self.dldir = dldir
@@ -123,8 +135,7 @@ def get_image(img_src):
     img = rq.get(img_src, stream=True).content
     image = Image.open(io.BytesIO(img))
     if image.mode == 'RGB' or image.mode == 'L':
-        if image.width == 1280:
-            return image
+        return image
 
 
 if __name__ == '__main__':
