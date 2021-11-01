@@ -9,3 +9,7 @@
 
 * Multiprocessing
     * Threading
+
+* Building class
+
+Main program: nhentaiDL_GUI.py
