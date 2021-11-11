@@ -18,6 +18,11 @@ window = tk.Tk()
 window.title(TITLE)
 window.geometry(WINDOW_SIZE)
 
+authorVar = tk.StringVar()
+titleVar = tk.StringVar()
+otherinfoVar = tk.StringVar()
+pageVar = tk.StringVar()
+
 
 def preview_event():
     # 預覽事件，按下預覽按鈕後發生的事情
@@ -32,24 +37,10 @@ def preview_event():
         nhentai.set_sixnum(sixnum)
         info = nhentai.info()
 
-        lb_lauthor = tk.Label(window, text='作者:', font=FONT)
-        lb_lauthor.grid(row=4, column=0, sticky='W', columnspan=2)
-        lb_author = tk.Label(window, text=info['author'], font=FONT)
-        lb_author.grid(row=5, column=0, sticky='W', columnspan=2)
-
-        lb_ltitle = tk.Label(window, text='標題', font=FONT)
-        lb_ltitle.grid(row=6, column=0, sticky='W', columnspan=2)
-        lb_title = tk.Label(window, text=info['title'], font=FONT)
-        lb_title.grid(row=7, column=0, sticky='W', columnspan=2)
-
-        lb_lotherinfo = tk.Label(window, text='其他資訊:', font=FONT)
-        lb_lotherinfo.grid(row=8, column=0, sticky='W', columnspan=2)
-        lb_otherinfo = tk.Label(window, text=info['other'], font=FONT)
-        lb_otherinfo.grid(row=9, column=0, sticky='W', columnspan=2)
-
-        lb_totalpages = tk.Label(window, text='總頁數:' +
-                                 info['pages']+'p', font=FONT)
-        lb_totalpages.grid(row=10, column=0, sticky='W', columnspan=3)
+        authorVar.set(info['author'])
+        titleVar.set(info['title'])
+        otherinfoVar.set(info['other'])
+        pageVar.set(info['pages']+'p')
 
         cover_image = nhentai.show_cover()
         cover_image = image_resize(cover_image)
@@ -145,6 +136,30 @@ button_dlpdf.grid(row=3, column=1)
 
 button_dlimg = tk.Button(window, text='下載圖片', font=FONT, command=dlimg_event)
 button_dlimg.grid(row=3, column=2)
+
+# 作品資訊
+lb_lauthor = tk.Label(window, text='作者:', font=FONT)
+lb_lauthor.grid(row=4, column=0, sticky='W', columnspan=2)
+lb_author = tk.Label(window, textvariable=authorVar, font=FONT)
+lb_author.grid(row=5, column=0, sticky='W', columnspan=2)
+
+
+lb_ltitle = tk.Label(window, text='標題', font=FONT)
+lb_ltitle.grid(row=6, column=0, sticky='W', columnspan=2)
+lb_title = tk.Label(window, textvariable=titleVar, font=FONT)
+lb_title.grid(row=7, column=0, sticky='W', columnspan=2)
+
+
+lb_lotherinfo = tk.Label(window, text='其他資訊:', font=FONT)
+lb_lotherinfo.grid(row=8, column=0, sticky='W', columnspan=2)
+lb_otherinfo = tk.Label(window, textvariable=otherinfoVar, font=FONT)
+lb_otherinfo.grid(row=9, column=0, sticky='W', columnspan=2)
+
+lb_ltotalpages = tk.Label(window, text='總頁數:', font=FONT)
+lb_ltotalpages.grid(row=10, column=0, sticky='W', columnspan=2)
+lb_otherinfo = tk.Label(window, textvariable=pageVar, font=FONT)
+lb_otherinfo.grid(row=11, column=0, sticky='W', columnspan=2)
+
 
 # 顯示於GUI上
 window.mainloop()
