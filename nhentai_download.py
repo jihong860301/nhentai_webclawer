@@ -4,6 +4,7 @@ import os
 from concurrent.futures import ThreadPoolExecutor
 from PIL import Image
 import io
+from scipy import stats
 
 
 class nhentai_download:
@@ -44,13 +45,20 @@ class nhentai_download:
         rr = rq.get(self.url+'1/')
         soup = bs(rr.text, 'html.parser')
         sel = soup.select("div a img")
-        base_src = sel[0]["src"].split('1.jpg')[0]
-        img_src = [f'{base_src}{i}.jpg' for i in range(
+        base_src = sel[0]["src"]
+        if '1.png' in base_src:
+            base_src = base_src.replace('1.png', '')
+            subfn = '.png'
+        elif '1.jpg' in base_src:
+            base_src = base_src.replace('1.jpg', '')
+            subfn = '.jpg'
+
+        img_src = [f'{base_src}{i}'+subfn for i in range(
             1, int(self.total_pages)+1)]
 
         # using multi-thread to download images
         with ThreadPoolExecutor(max_workers=self.threads) as executor:
-            results = executor.map(get_image, img_src)
+            results = executor.map(self.get_image, img_src)
 
         pp = 1
         for rr in results:
@@ -64,17 +72,25 @@ class nhentai_download:
         rr = rq.get(self.url+'1/')
         soup = bs(rr.text, 'html.parser')
         sel = soup.select("div a img")
-        base_src = sel[0]["src"].split('1.jpg')[0]
-        img_src = [f'{base_src}{i}.jpg' for i in range(
+        base_src = sel[0]["src"]
+        if '1.png' in base_src:
+            base_src = base_src.replace('1.png', '')
+            subfn = '.png'
+        elif '1.jpg' in base_src:
+            base_src = base_src.replace('1.jpg', '')
+            subfn = '.jpg'
+            
+        img_src = [f'{base_src}{i}'+subfn for i in range(
             1, int(self.total_pages)+1)]
 
         # using multi-thread to download images
         with ThreadPoolExecutor(max_workers=self.threads) as executor:
-            results = executor.map(get_image, img_src)
+            results = executor.map(self.get_image, img_src)
 
         images = []
         for rr in results:
             images.append(rr)
+            
         images[0].save(f'{self.dldir}\{self.six_num}.pdf',
                        'PDF', save_all=True, append_images=images[1:])
 
@@ -86,12 +102,13 @@ class nhentai_download:
         sel_tag = soup.select('div section span a')
         sel = soup.select('div h2')
         self.total_pages = sel_tag[-1].text
-        sel = soup.select('div h2.title span.before')
-        self.author = sel[0].text
-        sel = soup.select('div h2.title span.pretty')
-        self.title = sel[0].text
-        sel = soup.select('div h2.title span.after')
-        self.otherinfo = sel[0].text
+
+        sel = soup.find('span', {'class': 'before'})
+        self.author = sel.text
+        sel = soup.find('span', {'class': 'pretty'})
+        self.title = sel.text
+        sel = soup.find('span', {'class': 'after'})
+        self.otherinfo = sel.text
 
     def set_threads(self, threads):
         if isinstance(threads, int):
@@ -129,15 +146,24 @@ class nhentai_download:
         image = Image.open(io.BytesIO(img))
         return image
 
-
-def get_image(img_src):
-    # download image
-    img = rq.get(img_src, stream=True).content
-    image = Image.open(io.BytesIO(img))
-    if image.mode == 'RGB' or image.mode == 'L':
-        return image
+    @staticmethod
+    def get_image(img_src):
+        # download image
+        img = rq.get(img_src, stream=True).content
+        image = Image.open(io.BytesIO(img))
+        if image.mode == 'RGB' or image.mode == 'L':
+            return image
 
 
 if __name__ == '__main__':
+    path = 'C:\\WorkingAtHome\\Books'
+    
+    with open(path+'\\Sixs.txt', 'r') as f:
+        strings = f.read()
+    
+    sixnums = strings.replace(' ','').split(',')
     ndl = nhentai_download()
-    ndl.set_sixnum('369008')
+    ndl.set_dldir(path)
+
+    ndl.set_sixnum('279996')
+    ndl.dlpdf()
